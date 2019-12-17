@@ -11,28 +11,21 @@ import CoreMotion
 
 class ViewController: UIViewController {
 
+    let motionManager = CMMotionManager()
+
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
 
-        let motionManager = CMMotionManager()
         guard motionManager.isDeviceMotionAvailable else { return }
         motionManager.deviceMotionUpdateInterval = 1
 
         motionManager.startDeviceMotionUpdates(to: OperationQueue.current!, withHandler: { (motion, error) in
-            guard error == nil else {
-                print(error)
-                return
-            }
+            guard let motion = motion, error == nil else { return }
 
-            guard let motion = motion else {
-                print("motion equal nil")
-                return
-            }
-
-            print("attitude pitch: \(motion.attitude.pitch)")
-            print("attitude roll : \(motion.attitude.roll)")
-            print("attitude yaw  : \(motion.attitude.yaw)")
+            print("attitude pitch: \(motion.attitude.pitch * 180 / Double.pi)")
+            print("attitude roll : \(motion.attitude.roll * 180 / Double.pi)")
+            print("attitude yaw  : \(motion.attitude.yaw * 180 / Double.pi)")
         })
     }
 }
